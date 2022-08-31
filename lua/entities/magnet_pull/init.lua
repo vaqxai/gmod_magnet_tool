@@ -15,7 +15,16 @@ function ENT:Initialize()
   end
 end
 
+hook.Add("OnMagnetAttach", "MagnetAttachHook", function()
+  print("Attach")
+end)
+
+hook.Add("OnMagnetDetach", "MagnetDetachHook", function()
+  print("Detach")
+end)
+
 hook.Add("AcceptInput", "Magnet_OnOff", function(ent, input, activator, caller, value)
+
   if ent:GetClass() == "phys_magnet" then
     for i,child_ent in ipairs(ent:GetChildren()) do
       if child_ent:GetClass() == "magnet_pull" then
@@ -23,6 +32,7 @@ hook.Add("AcceptInput", "Magnet_OnOff", function(ent, input, activator, caller, 
       end
     end
   end
+
 end)
 
 function ENT:MagnetInput( input, value )
@@ -31,6 +41,10 @@ function ENT:MagnetInput( input, value )
   elseif input == "TurnOff" then
     self:SetEnabled(false)
   end
+end
+
+function ENT:MagnetAttach(input, value)
+  print("Attached/Detached")
 end
 
 function ENT:Think()
