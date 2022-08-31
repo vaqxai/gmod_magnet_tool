@@ -15,10 +15,11 @@ if CLIENT then
 
 end
 
-TOOL.ClientConVar[ "strength" ] = 1000
+TOOL.ClientConVar[ "strength" ] = 50
 TOOL.ClientConVar[ "key" ] = KEY_PAD_0
 TOOL.ClientConVar[ "maxobjects" ] = 1
 TOOL.ClientConVar[ "toggle" ] = 0
+TOOL.ClientConVar[ "pull" ] = 0
 
 if SERVER then
   util.AddNetworkString("magnet_setStrength")
@@ -29,8 +30,9 @@ function TOOL:LeftClick( trace )
 
     local key = self:GetClientNumber("key", KEY_PAD_0)
     local maxobjects = self:GetClientNumber("maxobjects", 1)
-    local strength = self:GetClientNumber("strength", 1000)
+    local strength = (self:GetClientNumber("strength", 50) * 10000)
     local toggle = self:GetClientNumber("toggle", 0)
+    local pull = self:GetClientNumber("pull", 0)
 
     local ent = construct.Magnet(
       self:GetOwner(),
@@ -47,14 +49,24 @@ function TOOL:LeftClick( trace )
       toggle
     )
 
-    local pull_ent = ents.Create("magnet_pull")
-    pull_ent:SetPos(ent:GetPos())
-    pull_ent:SetAngles(ent:GetAngles())
-    pull_ent:SetParent(ent)
+    ent:GetPhysicsObject():SetMass(1000)
 
     undo.Create("Magnet")
-      undo.AddEntity(ent)
-      undo.SetPlayer(self:GetOwner())
+    undo.AddEntity(ent)
+    undo.SetPlayer(self:GetOwner())
+
+    if pull > 0 then
+
+      local pull_ent = ents.Create("magnet_pull")
+      pull_ent:SetPos(ent:GetPos())
+      pull_ent:SetAngles(ent:GetAngles())
+      pull_ent:SetParent(ent)
+      pull_ent:SetMagnetStrength(strength)
+      pull_ent:Spawn()
+      undo.AddEntity(pull_ent)
+    
+    end
+
     undo.Finish()
 
   end
@@ -66,8 +78,9 @@ end
 
 function TOOL.BuildCPanel( panel )
   panel:Help("Magnet Tool")
-  panel:NumSlider("Strength", "magnet_strength", 1, 10000)
-  panel:NumSlider("Max. Objects", "magnet_maxobjects", 1, 100, 0)
+  panel:NumSlider("Strength (%)", "magnet_strength", 1, 100)
+  panel:NumSlider("Max Objects", "magnet_maxobjects", 1, 15, 0)
   panel:KeyBinder("Activation Key", "magnet_key")
   panel:CheckBox("Toggle", "magnet_toggle")
+  panel:CheckBox("Pull Entities", "magnet_pull")
 end
