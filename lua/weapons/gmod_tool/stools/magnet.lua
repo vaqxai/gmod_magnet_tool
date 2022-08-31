@@ -12,6 +12,8 @@ if CLIENT then
 	}
 
 	language.Add( "tool.magnet.left", "Create a magnet" )
+  language.Add( "tool.magnet.name", "Magnet" )
+  language.Add( "tool.magnet.desc", "Lets you create magnets")
 
 end
 
@@ -77,7 +79,7 @@ function TOOL:RightClick ( trace )
 end
 
 function TOOL.BuildCPanel( panel )
-  panel:Help("Magnet Tool")
+  panel:Help("Creates magnets that grab stuff when it touches")
   panel:NumSlider("Strength (%)", "magnet_strength", 1, 100)
   panel:NumSlider("Max Objects", "magnet_maxobjects", 1, 15, 0)
   panel:KeyBinder("Activation Key", "magnet_key")
