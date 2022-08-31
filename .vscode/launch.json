@@ -6,13 +6,13 @@
         "request": "attach",
         "host": "127.0.0.1",
         "port": 21111,
-        "name": "Attach to Garry's Mod",
+        "name": "Attach to Garry's Mod SERVER",
         "sourceRoot": "D:/Documents/gmodserver/garrysmod",
         // Important to map Lua source code to breakpoints
         // (otherwise we'll see missing file errors on VSCode)
         "sourceFileMap": {
           // Local absolute path: remote path
-          "D:/Documents/gmodserver/addons/magnet_tool": "addons/magnet_tool",
+          "D:/Documents/gmodserver/garrysmod/addons/magnet_tool": "addons/magnet_tool",
           // "D:/Documents/gmodserver/gamemode/examplerp": "gamemodes/examplerp"
         },
         "stopOnEntry": true
@@ -20,7 +20,7 @@
       {
         "type": "gmrdb",
         "request": "launch",
-        "name": "Launch Garry's Mod",
+        "name": "Launch Garry's Mod SERVER",
         "program": "D:/Documents/gmodserver/srcds.exe",
         "cwd": "D:/Documents/gmodserver",
         "args": [
@@ -43,8 +43,24 @@
         "sourceRoot": "D:/Documents/gmodserver/garrysmod",
         "port": 21111,
         "sourceFileMap": {
-          "D:/Documents/gmodserver/addons/magnet_tool": "addons/magnet_tool",
+          "D:/Documents/gmodserver/garrysmod/addons/magnet_tool": "addons/magnet_tool",
           // "C:/example-srcds/garrysmod/gamemode/examplerp": "gamemodes/examplerp"
+        },
+        "stopOnEntry": true
+      },
+      {
+        "type": "gmrdb",
+        "request": "attach",
+        "host": "127.0.0.1",
+        "port": 21112,
+        "name": "Attach to Garry's Mod CLIENT",
+        "sourceRoot": "C:/Program Files (x86)/Steam/steamapps/common/garrysmod",
+        // Important to map Lua source code to breakpoints
+        // (otherwise we'll see missing file errors on VSCode)
+        "sourceFileMap": {
+          // Local absolute path: remote path
+           "D:/Documents/gmodserver/garrysmod/addons/magnet_tool": "addons/magnet_tool",
+          // "C:/steamapps/common/garrysmod/gamemode/examplerp": "gamemodes/examplerp"
         },
         "stopOnEntry": true
       }
