@@ -15,17 +15,17 @@ function ENT:Initialize()
   end
 end
 
-hook.Add("OnMagnetAttach", "MagnetAttachHook", function()
-  print("Attach")
+hook.Add("OnMagnetAttach", "MagnetAttachHook", function(entityID)
+  ents.GetByIndex(entityID):MagnetAttach(1)
 end)
 
-hook.Add("OnMagnetDetach", "MagnetDetachHook", function()
-  print("Detach")
+hook.Add("OnMagnetDetach", "MagnetDetachHook", function(entityID)
+  ents.GetByIndex(entityID):MagnetAttach(-1)
 end)
 
 hook.Add("AcceptInput", "Magnet_OnOff", function(ent, input, activator, caller, value)
 
-  if ent:GetClass() == "phys_magnet" then
+  if ent:GetClass() == "phys_magnet" and (input == "TurnOn" or input == "TurnOff") then
     for i,child_ent in ipairs(ent:GetChildren()) do
       if child_ent:GetClass() == "magnet_pull" then
         child_ent:MagnetInput(input, value)
@@ -40,11 +40,27 @@ function ENT:MagnetInput( input, value )
     self:SetEnabled(true)
   elseif input == "TurnOff" then
     self:SetEnabled(false)
+    self:MagnetAttach(0) // 0 means detach all
   end
 end
 
-function ENT:MagnetAttach(input, value)
-  print("Attached/Detached")
+function ENT:AcceptInput(name, activator, caller, data)
+  if name == "Attach" then
+    self:MagnetAttach(1)
+  elseif name == "Detach" then
+    self:MagnetAttach(-1)
+  end
+end
+
+function ENT:MagnetAttach(value)
+
+  if value == 0 then
+    self:SetAttachedObjNum(0)
+  else
+    self:SetAttachedObjNum(self:GetAttachedObjNum() + value)
+  end
+
+  print("Attached/Max" .. self:GetAttachedObjNum() .. "/" .. self:GetAttachedObjMax())
 end
 
 function ENT:Think()
@@ -85,4 +101,3 @@ function ENT:Think()
 
   end
 end
-
