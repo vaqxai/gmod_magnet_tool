@@ -15,17 +15,9 @@ function ENT:Initialize()
   end
 end
 
-hook.Add("OnMagnetAttach", "MagnetAttachHook", function()
-  print("Attach")
-end)
-
-hook.Add("OnMagnetDetach", "MagnetDetachHook", function()
-  print("Detach")
-end)
-
 hook.Add("AcceptInput", "Magnet_OnOff", function(ent, input, activator, caller, value)
 
-  if ent:GetClass() == "phys_magnet" then
+  if ent:GetClass() == "phys_magnet" and (input == "TurnOn" or input == "TurnOff") then
     for i,child_ent in ipairs(ent:GetChildren()) do
       if child_ent:GetClass() == "magnet_pull" then
         child_ent:MagnetInput(input, value)
@@ -40,20 +32,39 @@ function ENT:MagnetInput( input, value )
     self:SetEnabled(true)
   elseif input == "TurnOff" then
     self:SetEnabled(false)
+    self:MagnetAttach(0) // 0 means detach all
   end
 end
 
-function ENT:MagnetAttach(input, value)
-  print("Attached/Detached")
+function ENT:IsFull()
+  if self:GetAttachedObjNum() < self:GetAttachedObjMax() then return false else return true end
+end
+
+function ENT:AcceptInput(name, activator, caller, data)
+  if name == "Attach" then
+    self:MagnetAttach(1)
+  elseif name == "Detach" then
+    self:MagnetAttach(-1)
+  end
+end
+
+function ENT:MagnetAttach(value)
+
+  if value == 0 then
+    self:SetAttachedObjNum(0)
+  else
+    self:SetAttachedObjNum(self:GetAttachedObjNum() + value)
+  end
+
 end
 
 function ENT:Think()
 
-  if self:GetEnabled() then
+  if self:GetEnabled() and !self:IsFull() then
 
     local ent = self:GetParent()
 
-    local nearby_ents = ents.FindInSphere( ent:GetPos(), (self:GetMagnetStrength() / 1000) )
+    local nearby_ents = ents.FindInCone( ent:GetPos(), ent:GetAngles():Up() * -1, (self:GetMagnetStrength() / 2000), 0.86 )
     for i,nearby_ent in ipairs(nearby_ents) do
 
       if (nearby_ent == self:GetParent()) then continue end
@@ -85,4 +96,3 @@ function ENT:Think()
 
   end
 end
-
