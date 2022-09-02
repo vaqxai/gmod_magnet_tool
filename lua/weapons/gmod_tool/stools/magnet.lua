@@ -53,20 +53,6 @@ function TOOL:LeftClick( trace )
 
     ent:GetPhysicsObject():SetMass(1000)
 
-    // hooking the magnet input/output
-    local MapLua = ents.Create( "lua_run" )
-    MapLua:SetName( "triggerhook" )
-    MapLua:Spawn()
-
-    ent:Fire("AddOutput", "OnAttach triggerhook:RunPassedCode:hook.Run( 'OnMagnetAttach' ):0:-1")
-    ent:Fire("AddOutput", "OnDetach triggerhook:RunPassedCode:hook.Run( 'OnMagnetDetach' ):0:-1")
-    // add magnet id to its event so we know which one fired
-    // there is no other way i don't think to do this
-
-    MapLua:Remove()
-
-    // end hooking
-
     undo.Create("Magnet")
     undo.AddEntity(ent)
     undo.SetPlayer(self:GetOwner())
@@ -78,8 +64,13 @@ function TOOL:LeftClick( trace )
       pull_ent:SetAngles(ent:GetAngles())
       pull_ent:SetParent(ent)
       pull_ent:SetMagnetStrength(strength)
+      pull_ent:SetAttachedObjMax(maxobjects)
+      pull_ent:SetName("MagnetPull" .. ent:GetCreationID())
       pull_ent:Spawn()
       undo.AddEntity(pull_ent)
+
+      ent:Fire("AddOutput", "OnAttach MagnetPull" .. ent:GetCreationID() .. ":Attach::0:-1")
+      ent:Fire("AddOutput", "OnDetach MagnetPull" .. ent:GetCreationID() .. ":Detach::0:-1")
     
     end
 

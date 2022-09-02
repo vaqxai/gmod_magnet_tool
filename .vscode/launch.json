@@ -13,6 +13,7 @@
         "sourceFileMap": {
           // Local absolute path: remote path
           "D:/Documents/gmodserver/garrysmod/addons/magnet_tool": "addons/magnet_tool",
+          "D:/Documents/gmodserver/garrysmod/gamemodes/base": "gamemodes/base"
           // "D:/Documents/gmodserver/gamemode/examplerp": "gamemodes/examplerp"
         },
         "stopOnEntry": true
