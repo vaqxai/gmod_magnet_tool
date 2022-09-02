@@ -37,7 +37,7 @@ function ENT:MagnetInput( input, value )
 end
 
 function ENT:IsFull()
-  if self:GetAttachedObjNum() < self:GetMaxObjNum() then return false else return true end
+  if self:GetAttachedObjNum() < self:GetAttachedObjMax() then return false else return true end
 end
 
 function ENT:AcceptInput(name, activator, caller, data)
@@ -64,7 +64,7 @@ function ENT:Think()
 
     local ent = self:GetParent()
 
-    local nearby_ents = ents.FindInSphere( ent:GetPos(), (self:GetMagnetStrength() / 1000) )
+    local nearby_ents = ents.FindInCone( ent:GetPos(), ent:GetAngles():Up() * -1, (self:GetMagnetStrength() / 2000), 0.86 )
     for i,nearby_ent in ipairs(nearby_ents) do
 
       if (nearby_ent == self:GetParent()) then continue end
