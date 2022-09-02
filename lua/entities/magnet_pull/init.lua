@@ -15,14 +15,6 @@ function ENT:Initialize()
   end
 end
 
-hook.Add("OnMagnetAttach", "MagnetAttachHook", function(entityID)
-  ents.GetByIndex(entityID):MagnetAttach(1)
-end)
-
-hook.Add("OnMagnetDetach", "MagnetDetachHook", function(entityID)
-  ents.GetByIndex(entityID):MagnetAttach(-1)
-end)
-
 hook.Add("AcceptInput", "Magnet_OnOff", function(ent, input, activator, caller, value)
 
   if ent:GetClass() == "phys_magnet" and (input == "TurnOn" or input == "TurnOff") then
@@ -44,6 +36,10 @@ function ENT:MagnetInput( input, value )
   end
 end
 
+function ENT:IsFull()
+  if self:GetAttachedObjNum() < self:GetMaxObjNum() then return false else return true end
+end
+
 function ENT:AcceptInput(name, activator, caller, data)
   if name == "Attach" then
     self:MagnetAttach(1)
@@ -60,12 +56,11 @@ function ENT:MagnetAttach(value)
     self:SetAttachedObjNum(self:GetAttachedObjNum() + value)
   end
 
-  print("Attached/Max" .. self:GetAttachedObjNum() .. "/" .. self:GetAttachedObjMax())
 end
 
 function ENT:Think()
 
-  if self:GetEnabled() then
+  if self:GetEnabled() and !self:IsFull() then
 
     local ent = self:GetParent()
 
